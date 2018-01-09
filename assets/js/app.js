@@ -1,4 +1,1 @@
-
-
-console.log('Je log l\'app');
-
+console.log('Je log l\'app')

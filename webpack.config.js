@@ -22,19 +22,36 @@ if (!dev) {
         }
     })
 }
-
 let config =   {
     entry: {
-    	app:'./assets/js/app.js'},
+        app: ['./assets/css/app.scss', './assets/js/app.js']
+    },
     watch: dev,
     output: {
-        path: path.resolve('./dist'),
+        path: path.resolve('./public/assets'),
         filename: dev ? '[name].js' : '[name].[chunkhash:8].js]',
-        publicPath: "/dist/",
+        publicPath: "/assets/",
+    },
+    resolve: {
+        alias: {
+            '@css': path.resolve('./assets/css/'),
+            '@': path.resolve('./assets/js/'),
+            Templates: path.resolve(__dirname, 'src/templates/')
+        }
     },
     devtool: dev ? "cheap-module-eval-source-map" : false,
+    devServer: {
+      contentBase: path.resolve('./public')
+      },
     module: {
         rules: [{
+                // enforce permet d'ordonner les regles, pre = avant
+                enforce: 'pre',
+                test: /\.js$/,
+                exclude: /(node_modules|bower_components)/,
+                use: ['eslint-loader']
+            },
+            {
                 test: /\.js$/,
                 exclude: /(node_modules|bower_components)/,
                 use: ['babel-loader']
@@ -42,36 +59,59 @@ let config =   {
             {
                 test: /\.css$/,
                 use: ExtractTextPlugin.extract({
-                	fallback: 'style-loader',
-                	use: cssLoaders
+                    fallback: 'style-loader',
+                    use: cssLoaders
                 })
             },
             {
                 test: /\.scss$/,
                 use: ExtractTextPlugin.extract({
-                	fallback: 'style-loader',
-                	use: [...cssLoaders, 'sass-loader']
+                    fallback: 'style-loader',
+                    use: [...cssLoaders, 'sass-loader']
                 })
+            },
+            {
+                test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+                loader: 'file-loader'
+            },
+            {
+                test: /\.(png|jpe?g|gif|svg)$/,
+
+                use: [{
+                        loader: 'url-loader',
+                        options: {
+                            limit: 8192,
+                            name: '[name].[hash:7].[ext]'
+                        }
+                    },
+                    {
+                        loader: 'img-loader',
+                        options: {
+                            enabled: !dev
+                        }
+                    }
+                ]
             }
         ]
     },
     plugins: [
-    new ExtractTextPlugin({
-    	filename: dev ? '[name.css]' : '[name].[contenthash:8].css',
-    	disable : dev
-    })]
+        new ExtractTextPlugin({
+            filename: dev ? '[name.css]' : '[name].[contenthash:8].css',
+            disable: dev
+        })
+    ]
 }
 
 if (!dev) {
     config.plugins.push(new UglifyJsPlugin({
-        sourceMap: false
-    })),
-    config.plugins.push(new ManifestPlugin()),
-    config.plugins.push(new CleanWebpackPlugin(['dist'],{
-    	root: path.resolve('./'),
-    	verbose: true,
-    	dry: false
-   
-    }))
+            sourceMap: false
+        })),
+        config.plugins.push(new ManifestPlugin()),
+        config.plugins.push(new CleanWebpackPlugin(['dist'], {
+            root: path.resolve('./'),
+            verbose: true,
+            dry: false
+
+        }))
 }
 module.exports = config
