@@ -1,1 +1,1 @@
-console.log('Je log l\'app')
+// import 'bootstrap'

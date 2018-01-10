@@ -1,7 +1,7 @@
 const path = require('path');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const ManifestPlugin = require('webpack-manifest-plugin');
+// const ManifestPlugin = require('webpack-manifest-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
@@ -25,12 +25,12 @@ if (!dev) {
 }
 let config =   {
     entry: {
-        app: ['./assets/css/app.scss', './assets/js/app.js']
+        app: ['./assets/scss/app.scss', './assets/js/app.js']
     },
     watch: dev,
     output: {
         path: path.resolve('./public/assets'),
-        filename: dev ? '[name].js' : '[name].[chunkhash:8].js',
+        filename: dev ? '[name].js' : '[name].js',
         publicPath: "/assets/",
     },
     resolve: {
@@ -83,7 +83,7 @@ let config =   {
                         loader: 'url-loader',
                         options: {
                             limit: 8192,
-                            name: '[name].[hash:7].[ext]'
+                            name: '[name].[ext]'
                         }
                     },
                     {
@@ -98,10 +98,9 @@ let config =   {
     },
     plugins: [
         new ExtractTextPlugin({
-            filename: dev ? '[name.css]' : '[name].[contenthash:8].css',
+            filename: dev ? '[name.css]' : '[name].css',
             disable: dev
-        }),
-        new HtmlWebpackPlugin()
+        })
     ]
 }
 
@@ -109,7 +108,7 @@ if (!dev) {
     config.plugins.push(new UglifyJsPlugin({
             sourceMap: false
         })),
-        config.plugins.push(new ManifestPlugin()),
+        // config.plugins.push(new ManifestPlugin()),
         config.plugins.push(new CleanWebpackPlugin(['dist'], {
             root: path.resolve('./'),
             verbose: true,
