@@ -1,6 +1,8 @@
-$background: #121113;
+$background: #DDD;
 
 body{
 	background-color: $background url(./Venise.jpg); 
 	transform: translateX(20px);
+	padding: 20px;
+	margin-top: 20px;
 }

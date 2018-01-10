@@ -3,6 +3,7 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const dev = process.env.NODE_ENV === "dev"
 
@@ -29,7 +30,7 @@ let config =   {
     watch: dev,
     output: {
         path: path.resolve('./public/assets'),
-        filename: dev ? '[name].js' : '[name].[chunkhash:8].js]',
+        filename: dev ? '[name].js' : '[name].[chunkhash:8].js',
         publicPath: "/assets/",
     },
     resolve: {
@@ -41,7 +42,8 @@ let config =   {
     },
     devtool: dev ? "cheap-module-eval-source-map" : false,
     devServer: {
-      contentBase: path.resolve('./public')
+      contentBase: path.resolve('./public'),
+      overlay : true
       },
     module: {
         rules: [{
@@ -98,7 +100,8 @@ let config =   {
         new ExtractTextPlugin({
             filename: dev ? '[name.css]' : '[name].[contenthash:8].css',
             disable: dev
-        })
+        }),
+        new HtmlWebpackPlugin()
     ]
 }
 
